@@ -1,0 +1,37 @@
+{
+    "TopologyItemNameChange": true,
+    "HostLicensingConfiguration": {
+        "NRTPRIM": {
+            "Enterprise": {
+                "Alarm Panel": {
+                    "Enabled": true,
+                    "Row": 13
+                },
+                "Event Notification": {
+                    "Enabled": false,
+                    "Row": 12
+                }
+            }
+        },
+        "nrtWEB-1": {
+            "Host": {
+                "Patient Center View":  {
+                    "Enabled": true,
+                    "Row": 8 
+                }
+            }
+        },
+        "nrtWEB-2": {
+            "Host": {
+                "Web Proxy Server": { 
+                    "Enabled": false,
+                    "Row": 10
+                },
+                "Web Server": {
+                    "Enabled": true,
+                    "Row": 9
+                }
+            }
+        }
+    } 
+}

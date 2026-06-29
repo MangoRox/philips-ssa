@@ -5,11 +5,11 @@
             "Enterprise": {
                 "Alarm Panel": {
                     "Enabled": true,
-                    "Row": 13
+                    "Row": 12
                 },
                 "Event Notification": {
                     "Enabled": false,
-                    "Row": 12
+                    "Row": 11
                 }
             }
         },

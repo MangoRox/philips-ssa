@@ -115,6 +115,9 @@ namespace SystemSetupAutomation.Workflows
             {
                 checkBox.Toggle();
                 Console.WriteLine("Unchecked '{0}' ({1}).", checkboxName, optionName);
+            } else
+            {
+                Console.WriteLine("No change needed for '{0}' ({1}).", checkboxName, optionName);
             }
         }
 

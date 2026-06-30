@@ -18,9 +18,6 @@ namespace SystemSetupAutomation.Workflows
 
         public void Execute()
         {
-            ButtonClicker.Click(_window, "_btnNext", "Next", times: 2);
-            Thread.Sleep(TimeSpan.FromSeconds(2));
-
             if (_config.HostLicensingConfiguration is null)
             {
                 Console.WriteLine("No host licensing configuration found. Skipping.");
@@ -115,7 +112,8 @@ namespace SystemSetupAutomation.Workflows
             {
                 checkBox.Toggle();
                 Console.WriteLine("Unchecked '{0}' ({1}).", checkboxName, optionName);
-            } else
+            }
+            else
             {
                 Console.WriteLine("No change needed for '{0}' ({1}).", checkboxName, optionName);
             }
@@ -127,11 +125,13 @@ namespace SystemSetupAutomation.Workflows
                 .FindFirstDescendant(cf =>
                     cf.ByName("Save").And(cf.ByControlType(ControlType.Button)))
                 ?.AsButton();
+
             if (saveButton is null)
             {
                 Console.WriteLine("ERROR: could not find 'Save' button on licensing page.");
                 return;
             }
+
             if (saveButton.IsEnabled)
             {
                 saveButton.Invoke();
@@ -142,8 +142,6 @@ namespace SystemSetupAutomation.Workflows
             {
                 Console.WriteLine("Save button is disabled. No changes to save.");
             }
-
-            ButtonClicker.Click(_window, "_btnNext", "Next");
         }
     }
 }

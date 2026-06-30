@@ -58,7 +58,6 @@ namespace SystemSetupAutomation.Workflows
                 }
             }
 
-            ButtonClicker.Click(_window, "_btnNext", "Next");
         }
 
         private List<ListBoxItem>? GetQualificationItems()

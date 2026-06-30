@@ -22,8 +22,6 @@ namespace SystemSetupAutomation.Workflows
 
         public void Execute()
         {
-            ButtonClicker.Click(_window, "_btnNext", "Next", times: 7);
-
             _window.SetForeground();
             _window.Focus();
             _window.Click();

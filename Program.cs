@@ -39,20 +39,49 @@ namespace SystemSetupAutomation
                 return;
             }
 
+            // Navigate to Topology page
+            ButtonClicker.Click(postLoginWindow, "_btnNext", "Next", times: 7);
+
             var topologyWorkflow = new TopologyWorkflow(postLoginWindow, config);
             topologyWorkflow.Execute();
+
+            // Navigate to Licensing page
+            ButtonClicker.Click(postLoginWindow, "_btnNext", "Next", times: 2);
+            Thread.Sleep(TimeSpan.FromSeconds(2));
 
             var licensingWorkflow = new LicensingWorkflow(postLoginWindow, config);
             licensingWorkflow.Execute();
 
+            // Navigate to System Encryption Combination page
+            ButtonClicker.Click(postLoginWindow, "_btnNext", "Next");
+            Thread.Sleep(TimeSpan.FromSeconds(1));
+
+            // Navigate to Factory Account Passwords page
+            ButtonClicker.Click(postLoginWindow, "_btnNext", "Next");
+            Thread.Sleep(TimeSpan.FromSeconds(1));
+
             var encryptionWorkflow = new EncryptionWorkflow(postLoginWindow);
             encryptionWorkflow.Execute();
+
+            // Navigate to Peripheral Configuration page
+            ButtonClicker.Click(postLoginWindow, "_btnNext", "Next");
+            Thread.Sleep(TimeSpan.FromSeconds(1));
+
+            // Navigate to Platform Security page
+            ButtonClicker.Click(postLoginWindow, "_btnNext", "Next");
+            Thread.Sleep(TimeSpan.FromSeconds(1));
 
             var platformSecurityWorkflow = new PlatformSecurityWorkflow(postLoginWindow);
             platformSecurityWorkflow.Execute();
 
+            // Navigate to Host Qualification page
+            ButtonClicker.Click(postLoginWindow, "_btnNext", "Next");
+
             var hostQualificationWorkflow = new HostQualificationWorkflow(postLoginWindow);
             hostQualificationWorkflow.Execute();
+
+            // Navigate to Finalization page
+            ButtonClicker.Click(postLoginWindow, "_btnNext", "Next");
 
             var finalizationWorkflow = new FinalizationWorkflow(postLoginWindow);
             finalizationWorkflow.Execute();

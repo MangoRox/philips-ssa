@@ -64,8 +64,6 @@ namespace SystemSetupAutomation.Workflows
             _window.SetForeground();
             _window.Focus();
             _window.Click();
-
-            ButtonClicker.Click(_window, "_btnNext", "Next");
         }
 
         private List<ListBoxItem>? GetQualificationItems()

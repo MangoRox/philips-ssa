@@ -5,25 +5,20 @@ using SystemSetupAutomation.ImageProcessing;
 
 namespace SystemSetupAutomation.Workflows
 {
-    internal sealed class HostQualificationWorkflow
+    internal sealed class HostQualificationWorkflow : IWorkflowStep
     {
         private const int CorrectionMaxAttempts = 30;
         private const int CorrectionIntervalSeconds = 20;
 
         private static readonly string[] SkippableItemNames = { "Windows Activation", "Link Speed and Duplex" };
 
-        private readonly Window _window;
+        public string Name => "Host Qualification";
 
-        public HostQualificationWorkflow(Window window)
+        public void Execute(Window window)
         {
-            _window = window;
-        }
+            CorrectionWaiter.WaitForCompletion(window, "Host Qualification");
 
-        public void Execute()
-        {
-            CorrectionWaiter.WaitForCompletion(_window, "Host Qualification");
-
-            var correctButton = _window
+            var correctButton = window
                 .FindFirstDescendant(cf =>
                     cf.ByName("Correct").And(cf.ByControlType(ControlType.Button)))
                 ?.AsButton();
@@ -36,7 +31,7 @@ namespace SystemSetupAutomation.Workflows
 
             Console.WriteLine("Found host qualification correct button.");
 
-            var qualificationItems = GetQualificationItems();
+            var qualificationItems = GetQualificationItems(window);
             if (qualificationItems is null)
             {
                 return;
@@ -54,21 +49,21 @@ namespace SystemSetupAutomation.Workflows
                 {
                     correctButton.Invoke();
                     CorrectionWaiter.WaitForCompletion(
-                        _window,
+                        window,
                         "Host Qualification correction",
                         CorrectionMaxAttempts,
                         CorrectionIntervalSeconds);
                 }
             }
 
-            _window.SetForeground();
-            _window.Focus();
-            _window.Click();
+            window.SetForeground();
+            window.Focus();
+            window.Click();
         }
 
-        private List<ListBoxItem>? GetQualificationItems()
+        private static List<ListBoxItem>? GetQualificationItems(Window window)
         {
-            var items = _window
+            var items = window
                 .FindFirstDescendant(cf => cf.ByAutomationId("_lvwQualificationItems"))
                 ?.FindAllDescendants(cf => cf.ByControlType(ControlType.ListItem))
                 .Select(item => item.AsListBoxItem())

@@ -7,31 +7,32 @@ using SystemSetupAutomation.Configuration;
 
 namespace SystemSetupAutomation.Workflows
 {
-    internal sealed class TopologyWorkflow
+    internal sealed class TopologyWorkflow : IWorkflowStep
     {
         private const int MaxEditDialogAttempts = 3;
 
-        private readonly Window _window;
         private readonly SetupConfiguration _config;
 
-        public TopologyWorkflow(Window window, SetupConfiguration config)
+        public string Name => "Topology";
+
+        public TopologyWorkflow(SetupConfiguration config)
         {
-            _window = window;
             _config = config;
         }
 
-        public void Execute()
+        public void Execute(Window window)
         {
-            _window.SetForeground();
-            _window.Focus();
-            _window.Click();
+            window.SetForeground();
+            window.Focus();
+            window.Click();
 
             if (!_config.TopologyItemNameChange)
             {
+                Console.WriteLine("Topology item name change is disabled. Skipping.");
                 return;
             }
 
-            var topologyGroupHeader = _window
+            var topologyGroupHeader = window
                 .FindFirstDescendant(cf =>
                     cf.ByControlType(ControlType.Group).And(cf.ByName("Host")));
 
@@ -44,7 +45,7 @@ namespace SystemSetupAutomation.Workflows
             var topologyItems = topologyGroupHeader
                 .FindAllDescendants(cf => cf.ByControlType(ControlType.ListItem));
 
-            var topologyEditButton = _window
+            var topologyEditButton = window
                 .FindFirstDescendant(cf =>
                     cf.ByName("Edit...").And(cf.ByControlType(ControlType.Button)))
                 ?.AsButton();
@@ -57,11 +58,11 @@ namespace SystemSetupAutomation.Workflows
 
             foreach (var item in topologyItems)
             {
-                RenameTopologyItem(item, topologyEditButton);
+                RenameTopologyItem(window, item, topologyEditButton);
             }
         }
 
-        private void RenameTopologyItem(AutomationElement item, Button editButton)
+        private static void RenameTopologyItem(Window window, AutomationElement item, Button editButton)
         {
             Console.WriteLine("Changing Display Name for topology item: {0}", item.Name);
             var listItem = item.AsListBoxItem();
@@ -77,7 +78,7 @@ namespace SystemSetupAutomation.Workflows
 
                 Thread.Sleep(TimeSpan.FromSeconds(1));
                 editWindow = Retry.WhileNull(
-                    () => _window.ModalWindows.FirstOrDefault(),
+                    () => window.ModalWindows.FirstOrDefault(),
                     timeout: TimeSpan.FromSeconds(5),
                     interval: TimeSpan.FromSeconds(1)).Result;
 

@@ -5,18 +5,18 @@ using SystemSetupAutomation.Configuration;
 
 namespace SystemSetupAutomation.Workflows
 {
-    internal sealed class LicensingWorkflow
+    internal sealed class LicensingWorkflow : IWorkflowStep
     {
-        private readonly Window _window;
         private readonly SetupConfiguration _config;
 
-        public LicensingWorkflow(Window window, SetupConfiguration config)
+        public string Name => "Licensing";
+
+        public LicensingWorkflow(SetupConfiguration config)
         {
-            _window = window;
             _config = config;
         }
 
-        public void Execute()
+        public void Execute(Window window)
         {
             if (_config.HostLicensingConfiguration is null)
             {
@@ -26,15 +26,15 @@ namespace SystemSetupAutomation.Workflows
 
             foreach (var (hostName, tabs) in _config.HostLicensingConfiguration)
             {
-                SelectHost(hostName);
-                ConfigureHostTabs(tabs);
-                SaveLicensing();
+                SelectHost(window, hostName);
+                ConfigureHostTabs(window, tabs);
+                SaveLicensing(window);
             }
         }
 
-        private void SelectHost(string hostName)
+        private static void SelectHost(Window window, string hostName)
         {
-            var hostTreeItem = _window
+            var hostTreeItem = window
                 .FindFirstDescendant(cf =>
                     cf.ByControlType(ControlType.TreeItem).And(cf.ByName(hostName)))
                 ?.AsTreeItem();
@@ -53,24 +53,24 @@ namespace SystemSetupAutomation.Workflows
             Console.WriteLine("Selected host '{0}' in licensing page.", hostName);
         }
 
-        private void ConfigureHostTabs(Dictionary<string, Dictionary<string, LicenseOption>> tabs)
+        private static void ConfigureHostTabs(Window window, Dictionary<string, Dictionary<string, LicenseOption>> tabs)
         {
             foreach (var (tabName, options) in tabs)
             {
-                SelectTab(tabName);
+                SelectTab(window, tabName);
 
                 foreach (var (optionName, licenseOption) in options)
                 {
-                    ConfigureLicenseCheckbox(optionName, licenseOption);
+                    ConfigureLicenseCheckbox(window, optionName, licenseOption);
                 }
             }
         }
 
-        private void SelectTab(string tabName)
+        private static void SelectTab(Window window, string tabName)
         {
             Thread.Sleep(TimeSpan.FromSeconds(1));
 
-            var tabItem = _window
+            var tabItem = window
                 .FindFirstDescendant(cf =>
                     cf.ByControlType(ControlType.TabItem).And(cf.ByName(tabName)))
                 ?.AsTabItem();
@@ -82,11 +82,11 @@ namespace SystemSetupAutomation.Workflows
             }
         }
 
-        private void ConfigureLicenseCheckbox(string optionName, LicenseOption licenseOption)
+        private static void ConfigureLicenseCheckbox(Window window, string optionName, LicenseOption licenseOption)
         {
             var checkboxName = $"Technical Option Row {licenseOption.Row}";
 
-            var checkBox = _window
+            var checkBox = window
                 .FindFirstDescendant(cf =>
                     cf.ByName(checkboxName).And(cf.ByControlType(ControlType.CheckBox)))
                 ?.AsCheckBox();
@@ -119,9 +119,9 @@ namespace SystemSetupAutomation.Workflows
             }
         }
 
-        private void SaveLicensing()
+        private static void SaveLicensing(Window window)
         {
-            var saveButton = _window
+            var saveButton = window
                 .FindFirstDescendant(cf =>
                     cf.ByName("Save").And(cf.ByControlType(ControlType.Button)))
                 ?.AsButton();

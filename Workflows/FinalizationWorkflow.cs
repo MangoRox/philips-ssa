@@ -4,31 +4,26 @@ using SystemSetupAutomation.Automation;
 
 namespace SystemSetupAutomation.Workflows
 {
-    internal sealed class FinalizationWorkflow
+    internal sealed class FinalizationWorkflow : IWorkflowStep
     {
         private const int MessageBoxMaxAttempts = 2;
 
-        private readonly Window _window;
+        public string Name => "Finalization";
 
-        public FinalizationWorkflow(Window window)
+        public void Execute(Window window)
         {
-            _window = window;
+            HandleConfirmationMessageBox(window);
+            SelectExitAndFinish(window);
         }
 
-        public void Execute()
-        {
-            HandleConfirmationMessageBox();
-            SelectExitAndFinish();
-        }
-
-        private void HandleConfirmationMessageBox()
+        private static void HandleConfirmationMessageBox(Window window)
         {
             Thread.Sleep(TimeSpan.FromSeconds(3));
 
             Window? messageBoxWindow = null;
             for (var attempt = 1; attempt <= MessageBoxMaxAttempts && messageBoxWindow is null; attempt++)
             {
-                messageBoxWindow = _window
+                messageBoxWindow = window
                     .FindFirstDescendant(cf =>
                         cf.ByControlType(ControlType.Window)
                             .And(cf.ByName("Patient Information Center iX")))
@@ -55,9 +50,9 @@ namespace SystemSetupAutomation.Workflows
             }
         }
 
-        private void SelectExitAndFinish()
+        private static void SelectExitAndFinish(Window window)
         {
-            var exitRadioButton = _window
+            var exitRadioButton = window
                 .FindFirstDescendant(cf =>
                     cf.ByAutomationId("_rdbExit").And(cf.ByControlType(ControlType.RadioButton)))
                 ?.AsRadioButton();
@@ -71,7 +66,7 @@ namespace SystemSetupAutomation.Workflows
             exitRadioButton.Patterns.Invoke.Pattern.Invoke();
             Console.WriteLine("Exit radio button selected.");
 
-            ButtonClicker.Click(_window, "_btnFinish", "Finish");
+            ButtonClicker.Click(window, "_btnFinish", "Finish");
         }
     }
 }

@@ -5,7 +5,7 @@ namespace SystemSetupAutomation.Automation
 {
     internal sealed class ButtonClicker
     {
-        private const int MaxEnableAttempts = 6;
+        private const int MaxEnableAttempts = 20;
         private static readonly TimeSpan EnableCheckInterval = TimeSpan.FromSeconds(5);
         private static readonly TimeSpan PostEnableDelay = TimeSpan.FromSeconds(1);
 

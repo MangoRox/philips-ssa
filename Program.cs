@@ -1,6 +1,6 @@
 using FlaUI.UIA3;
 using SystemSetupAutomation.Automation;
-using SystemSetupAutomation.Presets;
+using SystemSetupAutomation.Configuration;
 using SystemSetupAutomation.Workflows;
 
 namespace SystemSetupAutomation
@@ -8,23 +8,16 @@ namespace SystemSetupAutomation
     internal class Program
     {
         private const string ProcessName = "Philips.PMP.SystemSetupHost.exe";
+        private const string ConfigFilePath = "primConfig.json";
 
         static void Main(string[] args)
         {
-            var presetName = ParsePresetArgument(args);
-            if (presetName is null)
+            var config = SetupConfiguration.LoadFromFile(ConfigFilePath);
+            if (config is null)
             {
-                Console.WriteLine("Usage: SysSetupAutomation --preset <PHY|WEB|PIC|MOB>");
+                Console.WriteLine("ERROR: failed to load configuration from '{0}'.", ConfigFilePath);
                 return;
             }
-
-            var preset = PresetResolver.Resolve(presetName);
-            if (preset is null)
-            {
-                return;
-            }
-
-            Console.WriteLine("Running preset '{0}'.", preset.Name);
 
             Console.WriteLine("Attempting to attach to process '{0}'...", ProcessName);
             using var automation = new UIA3Automation();
@@ -40,33 +33,58 @@ namespace SystemSetupAutomation
             Console.WriteLine("Successfully attached to process '{0}' (PID: {1}).", ProcessName, app.ProcessId);
 
             var loginWorkflow = new LoginWorkflow(desktop, app);
-            var window = loginWorkflow.Execute();
-            if (window is null)
+            var postLoginWindow = loginWorkflow.Execute();
+            if (postLoginWindow is null)
             {
                 return;
             }
 
-            var steps = preset.BuildSteps();
-            foreach (var step in steps)
-            {
-                Console.WriteLine("--- Executing step: {0} ---", step.Name);
-                step.Execute(window);
-            }
+            // Navigate to Topology page
+            ButtonClicker.Click(postLoginWindow, "_btnNext", "Next", times: 7);
 
-            Console.WriteLine("Preset '{0}' completed successfully.", preset.Name);
-        }
+            var topologyWorkflow = new TopologyWorkflow(config);
+            topologyWorkflow.Execute(postLoginWindow);
 
-        private static string? ParsePresetArgument(string[] args)
-        {
-            for (var i = 0; i < args.Length - 1; i++)
-            {
-                if (args[i].Equals("--preset", StringComparison.OrdinalIgnoreCase))
-                {
-                    return args[i + 1];
-                }
-            }
+            // Navigate to Licensing page
+            ButtonClicker.Click(postLoginWindow, "_btnNext", "Next", times: 2);
+            Thread.Sleep(TimeSpan.FromSeconds(2));
 
-            return null;
+            var licensingWorkflow = new LicensingWorkflow(config);
+            licensingWorkflow.Execute(postLoginWindow);
+
+            // Navigate to System Encryption Combination page
+            ButtonClicker.Click(postLoginWindow, "_btnNext", "Next");
+            Thread.Sleep(TimeSpan.FromSeconds(1));
+
+            // Navigate to Factory Account Passwords page
+            ButtonClicker.Click(postLoginWindow, "_btnNext", "Next");
+            Thread.Sleep(TimeSpan.FromSeconds(1));
+
+            var encryptionWorkflow = new EncryptionWorkflow();
+            encryptionWorkflow.Execute(postLoginWindow);
+
+            // Navigate to Peripheral Configuration page
+            ButtonClicker.Click(postLoginWindow, "_btnNext", "Next");
+            Thread.Sleep(TimeSpan.FromSeconds(1));
+
+            // Navigate to Platform Security page
+            ButtonClicker.Click(postLoginWindow, "_btnNext", "Next");
+            Thread.Sleep(TimeSpan.FromSeconds(1));
+
+            var platformSecurityWorkflow = new PlatformSecurityWorkflow();
+            platformSecurityWorkflow.Execute(postLoginWindow);
+
+            // Navigate to Host Qualification page
+            ButtonClicker.Click(postLoginWindow, "_btnNext", "Next");
+
+            var hostQualificationWorkflow = new HostQualificationWorkflow();
+            hostQualificationWorkflow.Execute(postLoginWindow);
+
+            // Navigate to Finalization page
+            ButtonClicker.Click(postLoginWindow, "_btnNext", "Next");
+
+            var finalizationWorkflow = new FinalizationWorkflow();
+            finalizationWorkflow.Execute(postLoginWindow);
         }
     }
 }

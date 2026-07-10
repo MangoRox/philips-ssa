@@ -7,13 +7,13 @@ using SystemSetupAutomation.Configuration;
 
 namespace SystemSetupAutomation.Workflows
 {
-    internal sealed class TopologyWorkflow : IWorkflowStep
+    internal sealed class TopologyWorkflow: IWorkflowStep
     {
         private const int MaxEditDialogAttempts = 3;
 
         private readonly SetupConfiguration _config;
 
-        public string Name => "Topology";
+        public string Name => "Topology Configuration";
 
         public TopologyWorkflow(SetupConfiguration config)
         {

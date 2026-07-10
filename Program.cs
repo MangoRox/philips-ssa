@@ -54,12 +54,13 @@ namespace SystemSetupAutomation
                 new DatabaseInstallationWorkflow(),
                 new SQLServerConnectionWorkflow(),
                 new TopologyWorkflow(config),
-                new LicensingWorkflow(config),
+                new TechincalOptionAssignmentWorkflow(config),
                 new PicCredsWorkflow(),
                 new EncryptionWorkflow(),
                 new PlatformSecurityWorkflow(),
                 new HostQualificationWorkflow(),
                 new FinalizationWorkflow(),
+                new PeripheralConfigurationWorkflow(),
             };
 
             new SetupOrchestrator(steps, postLoginWindow).Run();

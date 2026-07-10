@@ -4,7 +4,7 @@ using SystemSetupAutomation.Automation;
 
 namespace SystemSetupAutomation.Workflows
 {
-    internal sealed class LoginWorkflow
+    internal sealed class LoginWorkflow(AutomationElement desktop, Application app)
     {
         private const string PostLoginWindowTitle = "PIC iX System Setup";
         private const int MaxWindowLookupAttempts = 18;
@@ -15,54 +15,32 @@ namespace SystemSetupAutomation.Workflows
         private const string DefaultUsername = "PhilipsBD";
         private const string DefaultPassword = "BK|Sup42p0rt!";
 
-        private readonly AutomationElement _desktop;
-        private readonly Application _app;
-
-        public LoginWorkflow(AutomationElement desktop, Application app)
+        public Window Execute()
         {
-            _desktop = desktop;
-            _app = app;
-        }
-
-        public Window? Execute()
-        {
-            var windowLocator = new WindowLocator(_desktop);
+            var windowLocator = new WindowLocator(desktop);
 
             var loginWindow = windowLocator.FindWindowByProcessId(
-                _app.ProcessId,
+                app.ProcessId,
                 MaxWindowLookupAttempts,
                 WindowLookupInterval);
 
-            if (loginWindow is null)
-            {
-                return null;
-            }
-
             Console.WriteLine("Attached to: {0}", loginWindow.Title);
 
-            if (!EnterCredentials(loginWindow))
-            {
-                return null;
-            }
+            EnterCredentials(loginWindow);
 
             ButtonClicker.Click(loginWindow, "_btnOk", "OK");
 
             var postLoginWindow = windowLocator.FindWindowByTitle(
-                _app.ProcessId,
+                app.ProcessId,
                 PostLoginWindowTitle,
                 PostLoginWindowLookupAttempts,
                 PostLoginWindowLookupInterval);
-
-            if (postLoginWindow is null)
-            {
-                return null;
-            }
 
             Console.WriteLine("Found window: {0}", postLoginWindow.Title);
             return postLoginWindow;
         }
 
-        private static bool EnterCredentials(Window loginWindow)
+        private static void EnterCredentials(Window loginWindow)
         {
             var usernameField = loginWindow
                 .FindFirstDescendant(cf => cf.ByAutomationId("_txtUserName"))
@@ -70,8 +48,7 @@ namespace SystemSetupAutomation.Workflows
 
             if (usernameField is null)
             {
-                Console.WriteLine("ERROR: could not find element with AutomationId '_txtUserName'.");
-                return false;
+                throw new InvalidOperationException("Could not find element with AutomationId '_txtUserName'.");
             }
 
             usernameField.Text = DefaultUsername;
@@ -83,14 +60,11 @@ namespace SystemSetupAutomation.Workflows
 
             if (passwordField is null)
             {
-                Console.WriteLine("ERROR: could not find element with AutomationId '_txtPassword'.");
-                return false;
+                throw new InvalidOperationException("Could not find element with AutomationId '_txtPassword'.");
             }
 
             passwordField.Text = DefaultPassword;
             Console.WriteLine("Password field updated.");
-
-            return true;
         }
     }
 }

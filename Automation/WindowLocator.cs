@@ -12,7 +12,7 @@ namespace SystemSetupAutomation.Automation
             _desktop = desktop;
         }
 
-        public Window? FindWindowByProcessId(int processId, int maxAttempts, TimeSpan interval)
+        public Window FindWindowByProcessId(int processId, int maxAttempts, TimeSpan interval)
         {
             for (var attempt = 1; attempt <= maxAttempts; attempt++)
             {
@@ -37,14 +37,11 @@ namespace SystemSetupAutomation.Automation
                 }
             }
 
-            Console.WriteLine(
-                "ERROR: no top-level window found for PID {0} after {1} attempts.",
-                processId,
-                maxAttempts);
-            return null;
+            throw new InvalidOperationException(
+                $"No top-level window found for PID {processId} after {maxAttempts} attempts.");
         }
 
-        public Window? FindWindowByTitle(int processId, string titlePrefix, int maxAttempts, TimeSpan interval)
+        public Window FindWindowByTitle(int processId, string titlePrefix, int maxAttempts, TimeSpan interval)
         {
             for (var attempt = 1; attempt <= maxAttempts; attempt++)
             {
@@ -71,12 +68,8 @@ namespace SystemSetupAutomation.Automation
                 }
             }
 
-            Console.WriteLine(
-                "ERROR: window '{0}' not found for PID {1} after {2} attempts.",
-                titlePrefix,
-                processId,
-                maxAttempts);
-            return null;
+            throw new InvalidOperationException(
+                $"Window '{titlePrefix}' not found for PID {processId} after {maxAttempts} attempts.");
         }
     }
 }

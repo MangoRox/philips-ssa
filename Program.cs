@@ -1,4 +1,3 @@
-using FlaUI.Core.AutomationElements;
 using FlaUI.UIA3;
 using SystemSetupAutomation.Automation;
 using SystemSetupAutomation.Configuration;
@@ -13,7 +12,6 @@ namespace SystemSetupAutomation
 
         static void Main(string[] args)
         {
-
             var config = SetupConfiguration.LoadFromFile(ConfigFilePath);
             if (config is null)
             {
@@ -34,9 +32,8 @@ namespace SystemSetupAutomation
 
             Console.WriteLine("Successfully attached to process '{0}' (PID: {1}).", ProcessName, app.ProcessId);
 
-            // if Window title contains "Login", then execute LoginWorkflow, otherwise assume already logged in
-            WindowLocator windowLocator = new WindowLocator(desktop);
-            Window? firstWindow = windowLocator.FindWindowByProcessId(app.ProcessId, 18, TimeSpan.FromSeconds(5));
+            var windowLocator = new WindowLocator(desktop);
+            var firstWindow = windowLocator.FindWindowByProcessId(app.ProcessId, 18, TimeSpan.FromSeconds(5));
             var postLoginWindow = firstWindow;
             if (firstWindow.Title.Contains("Login", StringComparison.OrdinalIgnoreCase))
             {
@@ -49,52 +46,23 @@ namespace SystemSetupAutomation
                 Console.WriteLine("Already logged in. Found window: {0}", firstWindow.Title);
             }
 
-            // Navigate to Topology page
-            ButtonClicker.Click(postLoginWindow, "_btnNext", "Next", times: 7);
+            var steps = new List<IWorkflowStep>
+            {
+                new LanguageSettingsWorkflow(),
+                new SystemInformationWorkflow(),
+                new ServerConnectionWorkflow(),
+                new DatabaseInstallationWorkflow(),
+                new SQLServerConnectionWorkflow(),
+                new TopologyWorkflow(config),
+                new LicensingWorkflow(config),
+                new PicCredsWorkflow(),
+                new EncryptionWorkflow(),
+                new PlatformSecurityWorkflow(),
+                new HostQualificationWorkflow(),
+                new FinalizationWorkflow(),
+            };
 
-            var topologyWorkflow = new TopologyWorkflow(config);
-            topologyWorkflow.Execute(postLoginWindow);
-
-            // Navigate to Licensing page
-            ButtonClicker.Click(postLoginWindow, "_btnNext", "Next", times: 2);
-            Thread.Sleep(TimeSpan.FromSeconds(2));
-
-            var licensingWorkflow = new LicensingWorkflow(config);
-            licensingWorkflow.Execute(postLoginWindow);
-
-            // Navigate to System Encryption Combination page
-            ButtonClicker.Click(postLoginWindow, "_btnNext", "Next");
-            Thread.Sleep(TimeSpan.FromSeconds(1));
-
-            // Navigate to Factory Account Passwords page
-            ButtonClicker.Click(postLoginWindow, "_btnNext", "Next");
-            Thread.Sleep(TimeSpan.FromSeconds(1));
-
-            var encryptionWorkflow = new EncryptionWorkflow();
-            encryptionWorkflow.Execute(postLoginWindow);
-
-            // Navigate to Peripheral Configuration page
-            ButtonClicker.Click(postLoginWindow, "_btnNext", "Next");
-            Thread.Sleep(TimeSpan.FromSeconds(1));
-
-            // Navigate to Platform Security page
-            ButtonClicker.Click(postLoginWindow, "_btnNext", "Next");
-            Thread.Sleep(TimeSpan.FromSeconds(1));
-
-            var platformSecurityWorkflow = new PlatformSecurityWorkflow();
-            platformSecurityWorkflow.Execute(postLoginWindow);
-
-            // Navigate to Host Qualification page
-            ButtonClicker.Click(postLoginWindow, "_btnNext", "Next");
-
-            var hostQualificationWorkflow = new HostQualificationWorkflow();
-            hostQualificationWorkflow.Execute(postLoginWindow);
-
-            // Navigate to Finalization page
-            ButtonClicker.Click(postLoginWindow, "_btnNext", "Next");
-
-            var finalizationWorkflow = new FinalizationWorkflow();
-            finalizationWorkflow.Execute(postLoginWindow);
+            new SetupOrchestrator(steps, postLoginWindow).Run();
         }
     }
 }

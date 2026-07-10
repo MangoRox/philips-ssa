@@ -1,3 +1,4 @@
+using FlaUI.Core.AutomationElements;
 using FlaUI.UIA3;
 using SystemSetupAutomation.Automation;
 using SystemSetupAutomation.Configuration;
@@ -12,6 +13,7 @@ namespace SystemSetupAutomation
 
         static void Main(string[] args)
         {
+
             var config = SetupConfiguration.LoadFromFile(ConfigFilePath);
             if (config is null)
             {
@@ -32,11 +34,19 @@ namespace SystemSetupAutomation
 
             Console.WriteLine("Successfully attached to process '{0}' (PID: {1}).", ProcessName, app.ProcessId);
 
-            var loginWorkflow = new LoginWorkflow(desktop, app);
-            var postLoginWindow = loginWorkflow.Execute();
-            if (postLoginWindow is null)
+            // if Window title contains "Login", then execute LoginWorkflow, otherwise assume already logged in
+            WindowLocator windowLocator = new WindowLocator(desktop);
+            Window? firstWindow = windowLocator.FindWindowByProcessId(app.ProcessId, 18, TimeSpan.FromSeconds(5));
+            var postLoginWindow = firstWindow;
+            if (firstWindow.Title.Contains("Login", StringComparison.OrdinalIgnoreCase))
             {
-                return;
+                Console.WriteLine("Found login window: {0}", firstWindow.Title);
+                var loginWorkflow = new LoginWorkflow(desktop, app);
+                postLoginWindow = loginWorkflow.Execute();
+            }
+            else
+            {
+                Console.WriteLine("Already logged in. Found window: {0}", firstWindow.Title);
             }
 
             // Navigate to Topology page

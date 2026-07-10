@@ -5,7 +5,7 @@ namespace SystemSetupAutomation.Workflows
 {
     internal sealed class EncryptionWorkflow : IWorkflowStep
     {
-        public string Name => "Encryption";
+        public string Name => "System Encryption Configuration";
 
         public void Execute(Window window)
         {

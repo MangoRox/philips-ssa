@@ -1,4 +1,5 @@
 using FlaUI.Core.AutomationElements;
+using FlaUI.Core.Definitions;
 using SystemSetupAutomation.Automation;
 
 namespace SystemSetupAutomation.Workflows
@@ -6,6 +7,9 @@ namespace SystemSetupAutomation.Workflows
     internal sealed class SetupOrchestrator(IReadOnlyList<IWorkflowStep> steps, Window window)
     {
         private static readonly TimeSpan PageTransitionDelay = TimeSpan.FromSeconds(5);
+        private static readonly TimeSpan ModalCheckDelay = TimeSpan.FromSeconds(2);
+
+        private const string ModalWindowTitle = "Patient Information Center iX";
 
         private readonly Dictionary<string, IWorkflowStep> _stepMap =
             steps.ToDictionary(s => s.Name, StringComparer.OrdinalIgnoreCase);
@@ -46,7 +50,26 @@ namespace SystemSetupAutomation.Workflows
 
                 ButtonClicker.Click(window, "_btnNext", "Next");
                 Thread.Sleep(PageTransitionDelay);
+
+                DismissModalIfPresent();
             }
+        }
+
+        private void DismissModalIfPresent()
+        {
+            Thread.Sleep(ModalCheckDelay);
+
+            var modal = window
+                .FindFirstChild(cf => cf.ByName(ModalWindowTitle).And(cf.ByControlType(ControlType.Window)))
+                ?.AsWindow();
+
+            if (modal is null)
+            {
+                return;
+            }
+
+            Console.WriteLine("Modal '{0}' detected. Dismissing.", ModalWindowTitle);
+            ButtonClicker.ClickByName(modal, "Yes");
         }
     }
 }

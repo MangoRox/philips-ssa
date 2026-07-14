@@ -18,7 +18,7 @@ namespace SystemSetupAutomation.Automation
         {
             var pageNameElement = Window
                 .FindFirstDescendant(cf =>
-                    cf.ByAutomationId("_bannerControl").And(cf.ByControlType(FlaUI.Core.Definitions.ControlType.Text)))
+                    cf.ByAutomationId("_bannerControl").And(cf.ByControlType(FlaUI.Core.Definitions.ControlType.Pane)))
                 ?.FindFirstDescendant(cf =>
                     cf.ByAutomationId("_lblMessage").And(cf.ByControlType(FlaUI.Core.Definitions.ControlType.Text)))
                 ?.AsLabel();

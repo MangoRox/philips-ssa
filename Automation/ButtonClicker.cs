@@ -5,7 +5,7 @@ namespace SystemSetupAutomation.Automation
 {
     internal sealed class ButtonClicker
     {
-        private const int MaxEnableAttempts = 20;
+        private const int MaxEnableAttempts = 40;
         private static readonly TimeSpan EnableCheckInterval = TimeSpan.FromSeconds(5);
         private static readonly TimeSpan PostEnableDelay = TimeSpan.FromSeconds(1);
 
@@ -43,6 +43,25 @@ namespace SystemSetupAutomation.Automation
                 Console.WriteLine("'{0}' button clicked.", displayName ?? automationId);
             }
         }
+
+        public static void FindButton(Window window, string automationId, string? displayName = null)
+        {
+            var button = window.FindFirstDescendant(cf =>
+                cf.ByControlType(ControlType.Button)
+                    .And(cf.ByAutomationId(automationId)))
+                ?.AsButton();
+
+            if (button is null)
+            {
+                Console.WriteLine(
+                    "ERROR: could not find button with AutomationId '{0}'.",
+                    automationId);
+                return;
+            }
+
+            WaitForEnabled(button, displayName ?? automationId);
+        }
+
         public static void Click(Button button, int times = 1)
         {
             for (var click = 1; click <= times; click++)
@@ -64,6 +83,11 @@ namespace SystemSetupAutomation.Automation
                 Console.WriteLine("'{0}' button clicked.", button.Name);
             }
         }
+        public static void WaitUntilEnabled(Button button, string displayName)
+        {
+            WaitForEnabled(button, displayName);
+        }
+
         private static void WaitForEnabled(Button button, string displayName)
         {
             for (var attempt = 1; attempt <= MaxEnableAttempts; attempt++)

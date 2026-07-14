@@ -43,7 +43,27 @@ namespace SystemSetupAutomation.Automation
                 Console.WriteLine("'{0}' button clicked.", displayName ?? automationId);
             }
         }
+        public static void Click(Button button, int times = 1)
+        {
+            for (var click = 1; click <= times; click++)
+            {
+                WaitForEnabled(button, button.Name);
 
+                try
+                {
+                    button.Invoke();
+                }
+                catch (FlaUI.Core.Exceptions.ElementNotAvailableException)
+                {
+                    Console.WriteLine(
+                        "ERROR: '{0}' button is no longer available. Continuing execution.",
+                        button.Name);
+                    return;
+                }
+
+                Console.WriteLine("'{0}' button clicked.", button.Name);
+            }
+        }
         private static void WaitForEnabled(Button button, string displayName)
         {
             for (var attempt = 1; attempt <= MaxEnableAttempts; attempt++)

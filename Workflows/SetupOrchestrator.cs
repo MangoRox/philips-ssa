@@ -16,6 +16,8 @@ namespace SystemSetupAutomation.Workflows
 
             while (true)
             {
+                ButtonClicker.WaitUntilButtonEnabled(window, "_btnNext", "Next");
+
                 var currentPage = pageInfo.CurrentSetupPageName();
 
                 if (_stepMap.TryGetValue(currentPage, out var step))
@@ -36,7 +38,6 @@ namespace SystemSetupAutomation.Workflows
 
                 ButtonClicker.Click(window, "_btnNext", "Next");
                 Thread.Sleep(PageTransitionDelay);
-                
             }
         }
     }

@@ -44,7 +44,7 @@ namespace SystemSetupAutomation.Automation
             }
         }
 
-        public static void FindButton(Window window, string automationId, string? displayName = null)
+        public static void WaitUntilButtonEnabled(Window window, string automationId, string? displayName = null)
         {
             var button = window.FindFirstDescendant(cf =>
                 cf.ByControlType(ControlType.Button)
@@ -82,10 +82,6 @@ namespace SystemSetupAutomation.Automation
 
                 Console.WriteLine("'{0}' button clicked.", button.Name);
             }
-        }
-        public static void WaitUntilEnabled(Button button, string displayName)
-        {
-            WaitForEnabled(button, displayName);
         }
 
         private static void WaitForEnabled(Button button, string displayName)

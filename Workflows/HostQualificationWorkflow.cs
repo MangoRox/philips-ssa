@@ -1,16 +1,15 @@
 using FlaUI.Core.AutomationElements;
 using FlaUI.Core.Definitions;
 using SystemSetupAutomation.Automation;
+using SystemSetupAutomation.Configuration;
 using SystemSetupAutomation.ImageProcessing;
 
 namespace SystemSetupAutomation.Workflows
 {
-    internal sealed class HostQualificationWorkflow : IWorkflowStep
+    internal sealed class HostQualificationWorkflow(SetupConfiguration config) : IWorkflowStep
     {
         private const int CorrectionMaxAttempts = 30;
         private const int CorrectionIntervalSeconds = 20;
-
-        private static readonly string[] SkippableItemNames = { "Windows Activation", "Link Speed and Duplex" };
 
         public string Name => "Host Qualification";
 
@@ -77,7 +76,7 @@ namespace SystemSetupAutomation.Workflows
             return items;
         }
 
-        private static bool VerifyAllItems(List<ListBoxItem> items, string outputFolder)
+        private bool VerifyAllItems(List<ListBoxItem> items, string outputFolder)
         {
             bool allCorrect = true;
 
@@ -112,9 +111,9 @@ namespace SystemSetupAutomation.Workflows
             return allCorrect;
         }
 
-        private static bool ShouldSkipItem(ListBoxItem item)
+        private bool ShouldSkipItem(ListBoxItem item)
         {
-            return SkippableItemNames.Any(name => item.Name.Contains(name));
+            return config.HostQualificationSkippableItems.Any(name => item.Name.Contains(name));
         }
 
         private static void DisableSkippableItem(ListBoxItem item)

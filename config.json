@@ -37,5 +37,9 @@
     }, 
     "PlatformSecuritySkippableItems": [
         "Local Security Policy"
+    ],
+    "HostQualificationSkippableItems": [
+        "Windows Activation",
+        "Link Speed and Duplex"
     ]
 }

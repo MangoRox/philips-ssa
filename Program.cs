@@ -58,7 +58,7 @@ namespace SystemSetupAutomation
                 new PicCredsWorkflow(),
                 new EncryptionWorkflow(config),
                 new PlatformSecurityWorkflow(config),
-                new HostQualificationWorkflow(),
+                new HostQualificationWorkflow(config),
                 new LicenseConfigurationWorkflow(),
                 new FinalizationWorkflow(),
                 new PeripheralConfigurationWorkflow(),

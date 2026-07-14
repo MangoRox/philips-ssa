@@ -54,7 +54,7 @@ namespace SystemSetupAutomation
                 new DatabaseInstallationWorkflow(),
                 new SQLServerConnectionWorkflow(),
                 new TopologyWorkflow(config),
-                new TechincalOptionAssignmentWorkflow(config),
+                new TechnicalOptionAssignmentWorkflow(config),
                 new PicCredsWorkflow(),
                 new EncryptionWorkflow(),
                 new PlatformSecurityWorkflow(),

@@ -5,13 +5,13 @@ using SystemSetupAutomation.Configuration;
 
 namespace SystemSetupAutomation.Workflows
 {
-    internal sealed class TechincalOptionAssignmentWorkflow : IWorkflowStep
+    internal sealed class TechnicalOptionAssignmentWorkflow : IWorkflowStep
     {
         private readonly SetupConfiguration _config;
 
         public string Name => "Technical Option Assignment";
 
-        public TechincalOptionAssignmentWorkflow(SetupConfiguration config)
+        public TechnicalOptionAssignmentWorkflow(SetupConfiguration config)
         {
             _config = config;
         }

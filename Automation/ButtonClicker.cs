@@ -44,6 +44,39 @@ namespace SystemSetupAutomation.Automation
             }
         }
 
+        public static void ClickByName(Window window, string name, int times = 1)
+        {
+            for (var click = 1; click <= times; click++)
+            {
+                var button = window
+                    .FindFirstDescendant(cf =>
+                        cf.ByName(name).And(cf.ByControlType(ControlType.Button)))
+                    ?.AsButton();
+
+                if (button is null)
+                {
+                    Console.WriteLine("ERROR: could not find button with name '{0}'.", name);
+                    return;
+                }
+
+                WaitForEnabled(button, name);
+
+                try
+                {
+                    button.Invoke();
+                }
+                catch (FlaUI.Core.Exceptions.ElementNotAvailableException)
+                {
+                    Console.WriteLine(
+                        "ERROR: '{0}' button is no longer available. Continuing execution.",
+                        name);
+                    return;
+                }
+
+                Console.WriteLine("'{0}' button clicked.", name);
+            }
+        }
+
         public static void WaitUntilButtonEnabled(Window window, string automationId, string? displayName = null)
         {
             var button = window.FindFirstDescendant(cf =>

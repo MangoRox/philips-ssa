@@ -1,5 +1,6 @@
 using FlaUI.Core.AutomationElements;
 using FlaUI.Core.Definitions;
+using SystemSetupAutomation.Configuration;
 
 namespace SystemSetupAutomation.Workflows
 {
@@ -7,30 +8,64 @@ namespace SystemSetupAutomation.Workflows
     {
         public string Name => "System Encryption Configuration";
 
+        private readonly SetupConfiguration _config;
+
+        public EncryptionWorkflow(SetupConfiguration config)
+        {
+            _config = config;
+        }
+
         public void Execute(Window window)
         {
-            // Note this button is labelled "Request" on non-primary systems, automation ID remains the same
-            var configureButton = window
+            string primaryServerName = _config.PrimaryServerName;
+            string hostname = Environment.MachineName;
+
+            if (hostname == primaryServerName)
+            {
+                var useDefaultButton = window
+                    .FindFirstDescendant(cf =>
+                        cf.ByAutomationId("_btnDefault").And(cf.ByControlType(ControlType.Button)))
+                    ?.AsButton();
+
+                if (useDefaultButton is null)
+                {
+                    Console.WriteLine("ERROR: could not find 'Use Default' button on Encryption page.");
+                    return;
+                }
+
+                if (!useDefaultButton.IsEnabled)
+                {
+                    Console.WriteLine("'Use Default' button is disabled. Skipping.");
+                    return;
+                }
+
+                useDefaultButton.Invoke();
+                Console.WriteLine("'Use Default' button clicked.");
+                Thread.Sleep(TimeSpan.FromSeconds(1));
+                return;
+            }
+
+            Thread.Sleep(TimeSpan.FromSeconds(2));
+
+            var requestButton = window
                 .FindFirstDescendant(cf =>
                     cf.ByAutomationId("_btnDoWork").And(cf.ByControlType(ControlType.Button)))
                 ?.AsButton();
 
-            Thread.Sleep(TimeSpan.FromSeconds(2));
-
-            if (configureButton is null)
+            if (requestButton is null)
             {
-                Console.WriteLine("ERROR: could not find 'Configure' button on Encryption page.");
+                Console.WriteLine("ERROR: could not find 'Request' button on Encryption page.");
                 return;
             }
 
-            if (!configureButton.IsEnabled)
+            if (!requestButton.IsEnabled)
             {
-                Console.WriteLine("'Configure' button is disabled. Skipping.");
+                Console.WriteLine("'Request' button is disabled. Skipping.");
                 return;
             }
 
-            configureButton.Invoke();
-            Console.WriteLine("'Configure' button clicked.");
+            requestButton.Invoke();
+            Console.WriteLine("'Request' button clicked.");
             Thread.Sleep(TimeSpan.FromSeconds(1));
         }
     }

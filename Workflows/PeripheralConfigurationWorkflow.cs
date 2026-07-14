@@ -9,7 +9,22 @@ namespace SystemSetupAutomation.Workflows
 
         public void Execute(Window window)
         {
-            // no configuration required for this page
+            // page sometimes has checkbox for sound verification that is required to be checked
+            CheckBox? soundVerificationCheckbox = window
+                .FindFirstDescendant(cf =>
+                    cf.ByAutomationId("_chkSoundVerification").And(cf.ByControlType(ControlType.CheckBox)))
+                ?.AsCheckBox();
+
+            if (soundVerificationCheckbox == null)
+            {
+                return;
+            }
+
+            if (soundVerificationCheckbox.IsChecked == false)
+            {
+                soundVerificationCheckbox.IsChecked = true;
+                Console.WriteLine("'Sound Verification' checkbox checked.");
+            }
         }
     }
 }

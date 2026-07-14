@@ -5,7 +5,7 @@ namespace SystemSetupAutomation.Configuration
     internal sealed class SetupConfiguration
     {
         public bool TopologyItemNameChange { get; set; }
-        public string? PrimaryServerName { get; set; }
+        public string PrimaryServerName { get; set; } = string.Empty;
         public Dictionary<string, Dictionary<string, Dictionary<string, LicenseOption>>>? HostLicensingConfiguration { get; set; }
 
         public static SetupConfiguration? LoadFromFile(string filePath)
@@ -22,7 +22,14 @@ namespace SystemSetupAutomation.Configuration
                 PropertyNameCaseInsensitive = true
             };
 
-            return JsonSerializer.Deserialize<SetupConfiguration>(json, options);
+            var config = JsonSerializer.Deserialize<SetupConfiguration>(json, options);
+
+            if (string.IsNullOrWhiteSpace(config?.PrimaryServerName))
+            {
+                throw new InvalidOperationException("Configuration is missing required value: 'PrimaryServerName'.");
+            }
+
+            return config;
         }
     }
 }

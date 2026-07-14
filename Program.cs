@@ -56,7 +56,7 @@ namespace SystemSetupAutomation
                 new TopologyWorkflow(config),
                 new TechnicalOptionAssignmentWorkflow(config),
                 new PicCredsWorkflow(),
-                new EncryptionWorkflow(),
+                new EncryptionWorkflow(config),
                 new PlatformSecurityWorkflow(),
                 new HostQualificationWorkflow(),
                 new LicenseConfigurationWorkflow(),

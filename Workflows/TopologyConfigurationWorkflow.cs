@@ -31,6 +31,15 @@ namespace SystemSetupAutomation.Workflows
                 Console.WriteLine("Topology item name change is disabled. Skipping.");
                 return;
             }
+            
+            string? primaryServerName = _config.PrimaryServerName;
+            string hostname = Environment.MachineName;
+
+            if (!string.Equals(hostname, primaryServerName, StringComparison.OrdinalIgnoreCase))
+            {
+                Console.WriteLine("Skipping Topology Configuration: hostname '{0}' does not match primary server '{1}'.", hostname, primaryServerName);
+                return;
+            }
 
             var topologyGroupHeader = window
                 .FindFirstDescendant(cf =>

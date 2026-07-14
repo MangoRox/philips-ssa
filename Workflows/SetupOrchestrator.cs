@@ -14,9 +14,14 @@ namespace SystemSetupAutomation.Workflows
         {
             var pageInfo = new SetupPageInfo(window);
 
+            var skipWait = false;
+
             while (true)
             {
-                ButtonClicker.WaitUntilButtonEnabled(window, "_btnNext", "Next");
+                if (!skipWait)
+                    ButtonClicker.WaitUntilButtonEnabled(window, "_btnNext", "Next");
+
+                skipWait = false;
 
                 var currentPage = pageInfo.CurrentSetupPageName();
 
@@ -35,6 +40,9 @@ namespace SystemSetupAutomation.Workflows
                     Console.WriteLine("Setup complete.");
                     break;
                 }
+
+                if (string.Equals(currentPage, "Host Qualification", StringComparison.OrdinalIgnoreCase))
+                    skipWait = true;
 
                 ButtonClicker.Click(window, "_btnNext", "Next");
                 Thread.Sleep(PageTransitionDelay);

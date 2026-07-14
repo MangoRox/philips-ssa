@@ -9,6 +9,7 @@ namespace SystemSetupAutomation.Workflows
 
         public void Execute(Window window)
         {
+            // Note this button is labelled "Request" on non-primary systems, automation ID remains the same
             var configureButton = window
                 .FindFirstDescendant(cf =>
                     cf.ByAutomationId("_btnDoWork").And(cf.ByControlType(ControlType.Button)))

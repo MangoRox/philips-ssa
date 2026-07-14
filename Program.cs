@@ -59,8 +59,10 @@ namespace SystemSetupAutomation
                 new EncryptionWorkflow(),
                 new PlatformSecurityWorkflow(),
                 new HostQualificationWorkflow(),
+                new LicenseConfigurationWorkflow(),
                 new FinalizationWorkflow(),
                 new PeripheralConfigurationWorkflow(),
+                new DisplayConfigurationWorkflow(),
             };
 
             new SetupOrchestrator(steps, postLoginWindow).Run();

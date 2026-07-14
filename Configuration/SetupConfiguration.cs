@@ -5,6 +5,7 @@ namespace SystemSetupAutomation.Configuration
     internal sealed class SetupConfiguration
     {
         public bool TopologyItemNameChange { get; set; }
+        public string? PrimaryServerName { get; set; }
         public Dictionary<string, Dictionary<string, Dictionary<string, LicenseOption>>>? HostLicensingConfiguration { get; set; }
 
         public static SetupConfiguration? LoadFromFile(string filePath)

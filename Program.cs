@@ -8,7 +8,7 @@ namespace SystemSetupAutomation
     internal class Program
     {
         private const string ProcessName = "Philips.PMP.SystemSetupHost.exe";
-        private const string ConfigFilePath = "primConfig.json";
+        private const string ConfigFilePath = "config.json";
 
         static void Main(string[] args)
         {

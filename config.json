@@ -1,5 +1,6 @@
 {
     "TopologyItemNameChange": true,
+    "PrimaryServerName" : "NRTPRIM",
     "HostLicensingConfiguration": {
         "NRTPRIM": {
             "Enterprise": {

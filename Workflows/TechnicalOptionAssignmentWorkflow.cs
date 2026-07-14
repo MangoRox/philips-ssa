@@ -24,6 +24,15 @@ namespace SystemSetupAutomation.Workflows
                 return;
             }
 
+            string? primaryServerName = _config.PrimaryServerName;
+            string hostname = Environment.MachineName;
+
+            if (!string.Equals(hostname, primaryServerName, StringComparison.OrdinalIgnoreCase))
+            {
+                Console.WriteLine("Skipping Technical Option Assignment: hostname '{0}' does not match primary server '{1}'.", hostname, primaryServerName);
+                return;
+            }
+
             foreach (var (hostName, tabs) in _config.HostLicensingConfiguration)
             {
                 SelectHost(window, hostName);

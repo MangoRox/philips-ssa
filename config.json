@@ -34,5 +34,8 @@
                 }
             }
         }
-    } 
+    }, 
+    "PlatformSecuritySkippableItems": [
+        "Local Security Policy"
+    ]
 }

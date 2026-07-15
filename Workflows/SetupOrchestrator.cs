@@ -49,9 +49,9 @@ namespace SystemSetupAutomation.Workflows
                     skipWait = true;
 
                 ButtonClicker.Click(window, "_btnNext", "Next");
-                Thread.Sleep(PageTransitionDelay);
-
+                Thread.Sleep(1);
                 DismissModalIfPresent();
+                Thread.Sleep(PageTransitionDelay);
             }
         }
 

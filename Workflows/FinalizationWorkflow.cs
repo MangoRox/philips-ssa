@@ -6,48 +6,11 @@ namespace SystemSetupAutomation.Workflows
 {
     internal sealed class FinalizationWorkflow : IWorkflowStep
     {
-        private const int MessageBoxMaxAttempts = 2;
-
-        public string Name => "Finalization";
+        public string Name => "Setup Complete";
 
         public void Execute(Window window)
         {
-            HandleConfirmationMessageBox(window);
             SelectExitAndFinish(window);
-        }
-
-        private static void HandleConfirmationMessageBox(Window window)
-        {
-            Thread.Sleep(TimeSpan.FromSeconds(3));
-
-            Window? messageBoxWindow = null;
-            for (var attempt = 1; attempt <= MessageBoxMaxAttempts && messageBoxWindow is null; attempt++)
-            {
-                messageBoxWindow = window
-                    .FindFirstDescendant(cf =>
-                        cf.ByControlType(ControlType.Window)
-                            .And(cf.ByName("Patient Information Center iX")))
-                    ?.AsWindow();
-
-                if (messageBoxWindow is null && attempt < MessageBoxMaxAttempts)
-                {
-                    Console.WriteLine(
-                        "Attempt {0}/{1}: 'Patient Information Center iX' message box not found. Retrying...",
-                        attempt,
-                        MessageBoxMaxAttempts);
-                    Thread.Sleep(TimeSpan.FromSeconds(5));
-                }
-            }
-
-            if (messageBoxWindow is not null)
-            {
-                Console.WriteLine("Found 'Patient Information Center iX' message box.");
-                ButtonClicker.Click(messageBoxWindow, "_btnLeft", "Yes");
-            }
-            else
-            {
-                Console.WriteLine("'Patient Information Center iX' message box did not appear. Continuing...");
-            }
         }
 
         private static void SelectExitAndFinish(Window window)

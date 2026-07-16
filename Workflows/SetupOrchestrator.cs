@@ -39,7 +39,7 @@ namespace SystemSetupAutomation.Workflows
                     Console.WriteLine("[{0}] No workflow registered. Skipping.", currentPage);
                 }
 
-                if (string.Equals(currentPage, "Finalization", StringComparison.OrdinalIgnoreCase))
+                if (string.Equals(currentPage, "Setup Complete", StringComparison.OrdinalIgnoreCase))
                 {
                     Console.WriteLine("Setup complete.");
                     break;

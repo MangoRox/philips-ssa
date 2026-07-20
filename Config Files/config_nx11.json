@@ -1,0 +1,45 @@
+{
+    "TopologyItemNameChange": true,
+    "PrimaryServerName" : "NX11PRIM",
+    "HostLicensingConfiguration": {
+        "NX11PRIM": {
+            "Enterprise": {
+                "Alarm Panel": {
+                    "Enabled": true,
+                    "Row": 12
+                },
+                "Event Notification": {
+                    "Enabled": false,
+                    "Row": 11
+                }
+            }
+        },
+        "nx11WEB-1": {
+            "Host": {
+                "Patient Center View":  {
+                    "Enabled": true,
+                    "Row": 8 
+                }
+            }
+        },
+        "nx11WEB-2": {
+            "Host": {
+                "Web Proxy Server": { 
+                    "Enabled": false,
+                    "Row": 10
+                },
+                "Web Server": {
+                    "Enabled": true,
+                    "Row": 9
+                }
+            }
+        }
+    }, 
+    "PlatformSecuritySkippableItems": [
+        "Local Security Policy"
+    ],
+    "HostQualificationSkippableItems": [
+        "Windows Activation",
+        "Link Speed and Duplex"
+    ]
+}

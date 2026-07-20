@@ -15,6 +15,10 @@ namespace SystemSetupAutomation.Workflows
 
         public void Execute(Window window)
         {
+            window.SetForeground();
+            window.Focus();
+            window.Click();
+
             var correctButton = window
                 .FindFirstDescendant(cf =>
                     cf.ByName("Correct").And(cf.ByControlType(ControlType.Button)))

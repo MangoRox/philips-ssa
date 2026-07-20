@@ -15,6 +15,10 @@ namespace SystemSetupAutomation.Workflows
 
         public void Execute(Window window)
         {
+            window.SetForeground();
+            window.Focus();
+            window.Click();
+
             CorrectionWaiter.WaitForCompletion(window, "Host Qualification");
 
             var correctButton = window
@@ -54,10 +58,6 @@ namespace SystemSetupAutomation.Workflows
                         CorrectionIntervalSeconds);
                 }
             }
-
-            window.SetForeground();
-            window.Focus();
-            window.Click();
         }
 
         private static List<ListBoxItem>? GetQualificationItems(Window window)

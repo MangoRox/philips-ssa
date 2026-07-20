@@ -12,11 +12,16 @@ namespace SystemSetupAutomation
 
         static void Main(string[] args)
         {
-            var config = SetupConfiguration.LoadFromFile(ConfigFilePath);
+            var fileArgIndex = Array.IndexOf(args, "--File");
+            var configFilePath = fileArgIndex >= 0 && fileArgIndex + 1 < args.Length
+                ? args[fileArgIndex + 1]
+                : ConfigFilePath;
+
+            var config = SetupConfiguration.LoadFromFile(configFilePath);
             if (config is null)
             {
-                Console.WriteLine("ERROR: failed to load configuration from '{0}'.", ConfigFilePath);
-                return;
+                Console.WriteLine("ERROR: failed to load configuration from '{0}'.", configFilePath);
+                throw new InvalidOperationException($"Failed to load configuration from '{configFilePath}'.");
             }
 
             Console.WriteLine("Attempting to attach to process '{0}'...", ProcessName);
@@ -27,7 +32,7 @@ namespace SystemSetupAutomation
             var app = processAttacher.AttachToProcess(ProcessName);
             if (app is null)
             {
-                return;
+                throw new InvalidOperationException($"Failed to attach to process '{ProcessName}'. Ensure the application is running.");
             }
 
             Console.WriteLine("Successfully attached to process '{0}' (PID: {1}).", ProcessName, app.ProcessId);

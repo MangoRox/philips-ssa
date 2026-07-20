@@ -44,7 +44,8 @@ namespace SystemSetupAutomation.Workflows
                     Console.WriteLine("Setup complete.");
                     break;
                 }
-
+                
+                // next button disables after host qualification, so skip wait for re-enable
                 if (string.Equals(currentPage, "Host Qualification", StringComparison.OrdinalIgnoreCase))
                     skipWait = true;
 

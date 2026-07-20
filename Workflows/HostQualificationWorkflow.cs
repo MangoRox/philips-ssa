@@ -100,7 +100,7 @@ namespace SystemSetupAutomation.Workflows
                 Thread.Sleep(TimeSpan.FromSeconds(1));
 
                 var status = ScreenshotClassifier.Classify(filePath);
-                Console.WriteLine("Saved screenshot of '{0}' to '{1}' — status: {2}.", item.Name, filePath, status);
+                Console.WriteLine("Processed '{0}' — status: {1}.", item.Name, status);
 
                 if (status == "error")
                 {

@@ -44,8 +44,8 @@ namespace SystemSetupAutomation.Workflows
         private static void SelectHost(Window window, string hostName)
         {
             var hostTreeItem = window
-                .FindFirstDescendant(cf =>
-                    cf.ByControlType(ControlType.TreeItem).And(cf.ByName(hostName)))
+                .FindAllDescendants(cf => cf.ByControlType(ControlType.TreeItem))
+                .FirstOrDefault(el => string.Equals(el.Name, hostName, StringComparison.OrdinalIgnoreCase))
                 ?.AsTreeItem();
 
             if (hostTreeItem is null)

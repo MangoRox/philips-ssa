@@ -1,6 +1,11 @@
 # HPM SysEng — System Setup Automation
 
-Automates the Philips PMP setup wizard using UI automation (FlaUI). The tool attaches to `Philips.PMP.SystemSetupHost.exe`, reads a `config.json` file, and drives each setup page through the wizard automatically — including topology configuration, licensing, platform security, host qualification, and finalization.
+Automates the Philips PMP setup wizard using UI automation (FlaUI). The tool attaches to `Philips.PMP.SystemSetupHost.exe`, reads a `config.json` file, and drives each setup page through the wizard automatically.
+NOTE: Program is currently designed to run alongside automation provided by Deployment Manager, untested on other systems. Contact Steven Maynard for more details.
+
+## How to install
+- go to releases page and download zip containing executable and sample config - TODO
+- all-in-one exe, no prerequisite programs required to run
 
 ## Requirements
 
@@ -10,13 +15,11 @@ Automates the Philips PMP setup wizard using UI automation (FlaUI). The tool att
 
 ## Usage
 
+- Note: If running on host other than primary, ensure primary has services running and is accessible from host
+  
 1. Start the Philips PMP setup wizard.
-2. Populate `config.json` with your environment's values (see [Configuration](#configuration) below).
-3. Run the tool — it will attach to the running wizard and drive through each page automatically.
-
-```
-dotnet run
-```
+2. Populate `config.json` in with your environment's values (see [Configuration](#configuration) below).
+3. Run the tool using cmd/pwsh, it will attach to SystemSetup and drive through each page automatically. If config file is not named config.json, pass filename/path using --File flag
 
 ## Configuration
 
